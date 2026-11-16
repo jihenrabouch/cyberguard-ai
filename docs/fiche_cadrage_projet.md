@@ -8,9 +8,9 @@
 - **Nom du Projet :** CyberGuard AI
 - **Intitulé :** Assistant intelligent de recherche documentaire en cybersécurité applicative (Web Application Security).
 - **Membres de l'Équipe :**
-  1. **Hela Kchouk** — Lead Data / Retrieval
-  2. **Yassmine Nouira** — Lead Backend / MLOps
-  3. **Jihen Ben Rabouche** — Lead Frontend / Infra
+  1. **Hela Kchouk** — Lead Data & Frontend
+  2. **Yassmine Nouira** — Lead Backend, LLM & Évaluation
+  3. **Jihen Ben Rabouche** — Lead RAG & Retrieval
 - **Encadrant :** Haithem Ghazouani
 - **Lien du Dépôt GitHub :** `https://github.com/jihenrabouch/cyberguard-ai`
 - **Branche de travail principale :** `main` (à protéger après configuration des règles de branche).
@@ -67,7 +67,7 @@ CyberGuard AI est une application web de question-réponse documentaire qui perm
 - **Base vectorielle retenue :** [x] Qdrant.
   - **Justification du choix :** Qdrant fournit une base vectorielle dédiée, des filtres sur les métadonnées, une intégration Python et un déploiement local via Docker. Elle convient à un PoC et permet de filtrer par document ou catégorie.
 - **Recherche hybride :** recherche dense (embeddings dans Qdrant) combinée à une recherche lexicale **BM25**, puis fusion des classements par **RRF** (Reciprocal Rank Fusion). BM25 est précis sur les termes techniques (« CSRF », « bcrypt »), la recherche dense gère le sens ; les deux sont complémentaires.
-- **Reranker (Cross-Encoder) :** reranking avec `BAAI/bge-reranker-v2-m3` si les ressources matérielles le permettent, sur les 20 meilleurs candidats, avec 5 passages conservés. Le reranker sera évalué avant d'être conservé.
+- **Reranker (Cross-Encoder) :** reranking avec `BAAI/bge-reranker-v2-m3` si les ressources matérielles le permettent, sur les 20 meilleurs candidats, avec 5 passages conservés. Le reranker sera évalué avant d'être conservé (classé en *Should Have*).
 - **LLM de génération :** modèle instruct configurable via Ollama (par exemple `qwen2.5:7b` si les ressources locales le permettent). Prévoir une configuration alternative compatible API si l'environnement local est insuffisant ; ne jamais versionner de clé API.
 - **Backend / Frontend :** FastAPI + Pydantic v2 ; React + Vite ; déploiement local via Docker Compose.
 
@@ -97,21 +97,21 @@ Les valeurs ci-dessous sont des **objectifs de validation**, pas des performance
 
 | Métrique | Définition / Outil | Objectif cible (KPI) |
 | :--- | :--- | :---: |
-| **Recall@5 (Retrieval)** | Présence d'au moins un passage de référence pertinent dans les 5 premiers résultats, sur le jeu de questions annoté | ≥ 85 % |
-| **NDCG@5 (Retrieval)** | Qualité du classement des passages pertinents parmi les 5 premiers | ≥ 0,70 |
-| **Context Recall** | Part des informations nécessaires présentes dans le contexte récupéré ; Ragas | ≥ 0,80 |
-| **Faithfulness** | Part des affirmations de la réponse soutenues par le contexte récupéré ; évaluation Ragas + vérification manuelle | ≥ 0,85 |
-| **Answer Relevance** | Pertinence de la réponse par rapport à la question ; Ragas + vérification manuelle | ≥ 0,80 |
-| **Citations correctes** | Réponses contenant au moins une source exacte | 100 % |
-| **Abstention correcte** | Refus de répondre sur les questions hors corpus | ≥ 90 % |
-| **Latence First-Token (TTFT)** | Temps d'affichage du premier token en streaming | < 3 s (modèle local), à mesurer |
-| **Latence E2E** | Temps entre l'envoi de la question et la réponse complète, mesuré sur l'environnement de test | À mesurer ; objectif initial < 15 s avec modèle local |
+| **Recall@5 (Retrieval)** | Présence d'au moins un passage de référence pertinent dans les 5 premiers résultats, sur le jeu de questions annoté | $\ge 85\ \%$ |
+| **NDCG@5 (Retrieval)** | Qualité du classement des passages pertinents parmi les 5 premiers | $\ge 0,70$ |
+| **Context Recall** | Part des informations nécessaires présentes dans le contexte récupéré ; Ragas | $\ge 0,80$ |
+| **Faithfulness** | Part des affirmations de la réponse soutenues par le contexte récupéré ; évaluation Ragas + vérification manuelle | $\ge 0,85$ |
+| **Answer Relevance** | Pertinence de la réponse par rapport à la question ; Ragas + vérification manuelle | $\ge 0,80$ |
+| **Citations correctes** | Réponses contenant au moins une source exacte | $100\ \%$ |
+| **Abstention correcte** | Refus de répondre sur les questions hors corpus | $\ge 90\ \%$ |
+| **Latence First-Token (TTFT)** | Temps d'affichage du premier token en streaming | $< 3\text{ s}$ (modèle local), à mesurer |
+| **Latence E2E** | Temps entre l'envoi de la question et la réponse complète, mesuré sur l'environnement de test | À mesurer ; objectif initial $< 15\text{ s}$ avec modèle local |
 
 ---
 
 ### 6. Gestion des Risques & Garde-fous
 
-- **Prévention des hallucinations :** réponse strictement fondée sur les extraits récupérés ; afficher les sources ; réponse d'abstention si les éléments sont insuffisants (seuil de score du reranker).
+- **Prévention des hallucinations :** réponse strictement fondée sur les extraits récupérés ; afficher les sources ; réponse d'abstention si les éléments sont insuffisants (seuil de score du retrieval/reranker).
 - **Filtrage des données personnelles (PII) :** masquage des e-mails, numéros et clés détectés par expressions régulières avant journalisation des questions ; aucune donnée personnelle dans le corpus.
 - **Gestion des accès :** le corpus OWASP est public ; le code et les données sources sont séparés ; l'accès à l'API est protégé par une clé configurée dans l'environnement ; si des documents sensibles sont ajoutés plus tard, un contrôle d'accès par métadonnées sera nécessaire.
 - **Injection de prompt :** le contenu des documents est traité comme une donnée non fiable, séparé des instructions système.
