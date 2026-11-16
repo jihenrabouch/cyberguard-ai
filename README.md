@@ -65,10 +65,10 @@ flowchart LR
 
 | Dimension | Métrique | Cible |
 |---|---|---|
-| Retrieval | Recall@k, NDCG@k | à mesurer sur le jeu de test |
-| Génération | Ragas Faithfulness | ≥ 0.85 |
-| Retrieval | Ragas Context Recall | ≥ 0.80 |
-| Performance | Latence First-Token | à mesurer |
+| Retrieval | Recall@5, NDCG@5 | Recall@5 $\ge 0.85$, NDCG@5 $\ge 0.70$ |
+| Génération | Ragas Faithfulness | $\ge 0.85$ |
+| Retrieval | Ragas Context Recall | $\ge 0.80$ |
+| Performance | Latence First-Token | $< 3\text{ s}$ (à mesurer) |
 
 L'évaluation compare une baseline (recherche vectorielle seule) à la version complète (hybride + RRF + reranking).
 
@@ -90,6 +90,7 @@ cyberguard-ai/
 ├── docs/
 │   ├── fiche_cadrage_projet.md
 │   ├── matrice_moscow_backlog.md
+│   ├── pitch_flash_audit.md
 │   ├── choix_base_vectorielle.md
 │   ├── OWASP_ATTRIBUTION.md
 │   └── CORPUS_MANIFEST.md
@@ -135,9 +136,9 @@ Cette indication concerne le corpus OWASP retenu. Les ressources tierces éventu
 
 | Membre | Rôle | Responsabilités principales |
 |---|---|---|
-| Hela Kchouk | Lead Data / Retrieval | Collecte du corpus, parsing, chunking, métadonnées, indexation, recherche hybride |
-| Yassmine Nouira | Lead Backend / MLOps | API FastAPI, orchestration du RAG, intégration du LLM, tests, évaluation |
-| Jihen Ben Rabouche | Lead Frontend / Infra | Interface de chat, affichage des sources, Docker Compose, dépôt GitHub |
+| Hela Kchouk | Lead Data & Frontend | Collecte du corpus, parsing, chunking, métadonnées, interface de chat, Docker Compose |
+| Yassmine Nouira | Lead Backend, LLM & Évaluation | API FastAPI, intégration du LLM, citations et abstention, pipeline Ragas, tracing |
+| Jihen Ben Rabouche | Lead RAG & Retrieval | Embeddings BGE-M3, indexation Qdrant et BM25, recherche hybride RRF, reranking, dépôt Git |
 
 Encadrant : Haithem Ghazouani.
 
