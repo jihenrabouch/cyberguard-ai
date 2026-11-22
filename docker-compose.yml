@@ -1,0 +1,12 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: cyberguard-qdrant
+    ports:
+      - "127.0.0.1:6333:6333"   # API REST (accessible seulement depuis ce PC)
+      - "127.0.0.1:6334:6334"   # gRPC
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+volumes:
+  qdrant_data:
