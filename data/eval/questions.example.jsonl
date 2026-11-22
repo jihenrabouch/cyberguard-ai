@@ -1,0 +1,4 @@
+{"id": "q001", "question": "Comment stocker les mots de passe de façon sécurisée ?", "expected_files": ["Password_Storage_Cheat_Sheet.md"], "type": "simple"}
+{"id": "q002", "question": "Comment empêcher un attaquant de modifier mes requêtes SQL ?", "expected_files": ["SQL_Injection_Prevention_Cheat_Sheet.md", "Query_Parameterization_Cheat_Sheet.md"], "type": "synonyme"}
+{"id": "q003", "question": "Comment sécuriser la connexion et les droits d'accès des utilisateurs ?", "expected_files": ["Authentication_Cheat_Sheet.md", "Authorization_Cheat_Sheet.md"], "type": "multi-doc"}
+{"id": "q004", "question": "Quelle est la meilleure recette de couscous ?", "expected_files": [], "type": "hors-corpus"}
